@@ -17,7 +17,8 @@ const resumeTotal = document.getElementById('resume-total-cycle');
 const resumeNb = document.getElementById('resume-nb-tours');
 const resumeDates = document.getElementById('resume-dates');
 const maxInput = 20;
-
+const calendrier = document.getElementById('calendrier');
+const corps = document.getElementById('calendrier-corps')
 
 
 
@@ -31,7 +32,8 @@ ajouterBtn.addEventListener('click', function() {
    const dd = String(today.getDate()).padStart(2, '0'); 
 
     const todayDate = `${yyyy}-${mm}-${dd}`;
-
+     
+    const nom = nomCercle.value.length;
 
     if (dateDebut.value < todayDate) {
     dateDebutErreur.textContent = "La date doit être aujourd'hui ou ultérieure !";
@@ -39,19 +41,19 @@ ajouterBtn.addEventListener('click', function() {
     hasError = true;
     } else {
     dateDebutErreur.classList.add('hidden');
-    }
+    } 
 
 
-    if (nomCercle.value.trim() === "") {
-        nomCercleErreur.textContent = "entre cercle name !!!";
+    if (nomCercle.value.trim() === "" || nom > 40 || nom < 3) {
+        nomCercleErreur.textContent = "Nom du cercle entre  3-40 letter !!!";
         nomCercleErreur.classList.remove('hidden');
         hasError = true;
-    } else if(cotisation.value.trim() === "") {
-        cotisationErreur.textContent = "entre cotisation (MAD) !!!";
+    } else if(cotisation.value.trim() === "" || cotisation.value > 50000 || cotisation.value < 100) {
+        cotisationErreur.textContent = "cotisation entre 100-50.000 (MAD) !!!";
         cotisationErreur.classList.remove('hidden');
         hasError = true;
     } else if(dateDebut.value.trim() === "") {
-        dateDebutErreur.textContent = "entre date de debut !!!!";
+        dateDebutErreur.textContent = " date de debut doit être aujourd'hui ou ultérieure ! !!!!";
         dateDebutErreur.classList.remove('hidden');
         hasError = true;
     } else {
@@ -66,8 +68,8 @@ ajouterBtn.addEventListener('click', function() {
     const dernierInput = inputs[inputs.length - 1];
     if (inputs.length > 0) {
         
-        if (dernierInput.value.trim() === "") {
-            participantsErreur.textContent = "entre nom !!!!";
+        if (dernierInput.value.trim() === "" || dernierInput.value.length < 3 || dernierInput.value.length > 30) {
+            participantsErreur.textContent = "nom de  participant !!!!";
             participantsErreur.classList.remove('hidden');
             hasError = true;
         }
@@ -84,54 +86,64 @@ ajouterBtn.addEventListener('click', function() {
 
     participantsErreur.classList.add('hidden');
 
-    const limit = document.querySelectorAll('li').length
-
     
     
-         
-         const li = document.createElement('li');
-         li.className = "flex items-center gap-2";
-         
-         const newInput = document.createElement('input');
-         newInput.type = "text";
-         newInput.name = "participant";
-         newInput.placeholder = "Prénom du participant";
-         newInput.className = "w-full rounded border border-daret-bordure px-3 py-2 focus:outline-2 focus:outline-offset-2 focus:outline-daret-vert";
-     
-         const deleteBtn = document.createElement('button');
-         deleteBtn.type = "button";
-         deleteBtn.textContent = "✕";
-         deleteBtn.className = "rounded bg-red-100 px-3 py-2 text-red-600 hover:bg-red-200";
-         deleteBtn.addEventListener('click', function() {
-             li.remove();
-             participantsErreur.classList.add('hidden');
-         });
-     
-         li.appendChild(newInput);
-         li.appendChild(deleteBtn);
-         participantsListe.appendChild(li); 
-     
-        
-         
+    
+    
+    
+    const newInput = document.createElement('input');
+    newInput.type = "text";
+    newInput.name = "participant";
+    newInput.placeholder = "Prénom du participant";
+    newInput.className = "w-full rounded border border-daret-bordure px-3 py-2 focus:outline-2 focus:outline-offset-2 focus:outline-daret-vert";
+    
+    
+    
+    const deleteBtn = document.createElement('button');
+    deleteBtn.type = "button";
+    deleteBtn.textContent = "✕";
+    deleteBtn.className = "rounded bg-red-100 px-3 py-2 text-red-600 hover:bg-red-200 hidden";
    
-   
+
+    
+    if (inputs.length > 0) {
+        deleteBtn.classList.remove('hidden')
+    }
+    
+    if (inputs.length < 20) {
         
-        if (nomCercle.value.length > 3 && nomCercle.value.length < 40) {
-             nomCercleErreur.classList.add('hidden')
+        const li = document.createElement('li');
+        li.className = "flex items-center gap-2";
 
-            if (cotisation.value >= 100 && cotisation.value <= 50000) {
-                
-                    generer.addEventListener('click', () => {
-                      nomCercleErreur.classList.add('hidden')
-                      cotisationErreur.classList.add('hidden')
-                     contenu.classList.remove('hidden')
-                     
-             
-                     resume.textContent = cotisation.value * (inputs.length + 1);
+        li.appendChild(newInput);
+        li.appendChild(deleteBtn);
+        participantsListe.appendChild(li); 
 
-                     resumeTotal.textContent = cotisation.value ;
-                     
-                         nomber = inputs.length;
+             deleteBtn.addEventListener('click', function() {
+               li.remove();
+                participantsErreur.classList.add('hidden');
+            });
+    }
+       
+
+     
+
+    const  resum =  (inputs.length + 1) * cotisation.value;
+
+    
+    generer.addEventListener('click', () => {
+        if (inputs.length > 2) {
+            contenu.classList.remove('hidden')
+            calendrier.classList.remove
+
+            resume.textContent = resum;
+
+            resumeTotal.textContent = cotisation.value;
+
+            resumeNb.textContent = inputs.length + 1;
+
+            
+                    nomber = inputs.length;
 
                      if (periodicite.value === 'hebdomadaire') {
                         let userDate = new Date(dateDebut.value)
@@ -142,7 +154,7 @@ ajouterBtn.addEventListener('click', function() {
                         const month = userDate.getMonth() + 1;
                         const year = userDate.getFullYear();
                     
-                        resumeDates.textContent = `${day}-${month}-${year}`;
+                        resumeDates.textContent = `${dateDebut.value} => ${year}-${month}-${day}`;
                     } if (periodicite.value === 'quinzaine') {
                         let userDate = new Date(dateDebut.value)
                     
@@ -152,7 +164,7 @@ ajouterBtn.addEventListener('click', function() {
                         const month = userDate.getMonth() + 1;
                         const year = userDate.getFullYear();
                     
-                        resumeDates.textContent = `${day}-${month}-${year}`;
+                        resumeDates.textContent = `${dateDebut.value} => ${year}-${month}-${day}`;
                     } if (periodicite.value === 'mensuelle') {
                         let userDate = new Date(dateDebut.value)
                     
@@ -162,18 +174,22 @@ ajouterBtn.addEventListener('click', function() {
                         const month = userDate.getMonth() + 1;
                         const year = userDate.getFullYear();
                     
-                        resumeDates.textContent = `${day}-${month}-${year}`;
+                        resumeDates.textContent = `${dateDebut.value} => ${year}-${month}-${day}`;
+                    }
+                
+                    for (let i = 0; i < inputs.length; i++) {
+                        
+                        
                     }
 
+        } 
 
-                      deleteBtn.addEventListener('click', function() {
-                           resume.textContent = cotisation.value * (inputs.length);
-                           resumeNb.textContent = inputs.length;
-                            if (inputs.length === 0) {
-                             contenu.classList.add('hidden')
-                            }
+        deleteBtn.addEventListener('click', function () {
+            resume.textContent = cotisation.value * inputs.length;
 
-                     nomber = inputs.length - 1;
+            resumeNb.textContent = inputs.length;
+
+              nomber = inputs.length - 1;
 
                      if (periodicite.value === 'hebdomadaire') {
                         let userDate = new Date(dateDebut.value)
@@ -184,7 +200,7 @@ ajouterBtn.addEventListener('click', function() {
                         const month = userDate.getMonth() + 1;
                         const year = userDate.getFullYear();
                     
-                        resumeDates.textContent = `${day}-${month}-${year}`;
+                        resumeDates.textContent = `${dateDebut.value} => ${year}-${month}-${day}`;
                     } if (periodicite.value === 'quinzaine') {
                         let userDate = new Date(dateDebut.value)
                     
@@ -194,7 +210,7 @@ ajouterBtn.addEventListener('click', function() {
                         const month = userDate.getMonth() + 1;
                         const year = userDate.getFullYear();
                     
-                        resumeDates.textContent = `${day}-${month}-${year}`;
+                        resumeDates.textContent = `${dateDebut.value} => ${year}-${month}-${day}`;
                     } if (periodicite.value === 'mensuelle') {
                         let userDate = new Date(dateDebut.value)
                     
@@ -204,44 +220,25 @@ ajouterBtn.addEventListener('click', function() {
                         const month = userDate.getMonth() + 1;
                         const year = userDate.getFullYear();
                     
-                        resumeDates.textContent = `${day}-${month}-${year}`;
-                    }
-                            
-                        });
-
-                     if (newInput.value.trim() !== "") {
-                       resumeNb.textContent = inputs.length + 1;
-
-                    } else {
-                        resumeNb.textContent = inputs.length;
+                        resumeDates.textContent = `${dateDebut.value} => ${year}-${month}-${day}`;
                     }
 
-
-                   
-
-                    
-                    
-                    
-                     });                  
-                
-
-
-                    
-                 
-            } else {
-                cotisationErreur.textContent = "entre number between 100 and 50.000 MAD !!!";
-                cotisationErreur.classList.remove('hidden');
-            }
-         } else {
-             nomCercleErreur.textContent = "entre nom between 3 and 40 caracter !!!";
-             nomCercleErreur.classList.remove('hidden');
-         }
+                    if (inputs.length < 2) {
+                        contenu.classList.add('hidden')
+                    }
+        })
+    })
+  
+   
+         
+   
+   
+           
     
   
 
 
 });
-
 
 
 
