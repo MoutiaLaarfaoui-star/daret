@@ -126,8 +126,7 @@ ajouterBtn.addEventListener('click', function() {
     }
        
 
-     
-
+    
     const  resum =  (inputs.length + 1) * cotisation.value;
 
     
